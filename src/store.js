@@ -1,103 +1,48 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import {
-  addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
-  MarkerType,
-} from "reactflow";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
+import { nanoid } from "nanoid";
+import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
 
-export const useStore = createWithEqualityFn(
-  (set, get) => ({
-    nodes: [],
-    edges: [],
-    nodeIDs: {},
+export const useStore = create((set, get) => ({
+  nodes: [],
+  edges: [],
 
-    getNodeID: (type) => {
-      const newIDs = { ...get().nodeIDs };
-      if (newIDs[type] === undefined) {
-        newIDs[type] = 0;
-      }
-      newIDs[type] += 1;
-      set({ nodeIDs: newIDs });
-      return `${type}-${newIDs[type]}`;
-    },
+  getNodeID: (type) => `${type}-${nanoid(6)}`,
 
-    addNode: (node) => {
-      set({
-        nodes: [...get().nodes, node],
-      });
-    },
+  addNode: (node) => set((state) => ({ nodes: [...state.nodes, node] })),
 
-    getInitialEdges: (sourceHandle, targetNodeID) => {
-      const sourceNodeID = sourceHandle.split("-")[0]; // Adjust based on handle format
-      const edgeID = `e${sourceNodeID}-${targetNodeID}`;
+  addEdge: (edge) => set((state) => ({ edges: addEdge(edge, state.edges) })),
+
+  onNodesChange: (changes) =>
+    set((state) => ({ nodes: applyNodeChanges(changes, state.nodes) })),
+
+  onEdgesChange: (changes) =>
+    set((state) => ({ edges: applyEdgeChanges(changes, state.edges) })),
+
+  onConnect: (connection) =>
+    set((state) => {
+      const targetNode = state.nodes.find((n) => n.id === connection.target);
+      const targetHandle =
+        targetNode?.data?.nodeType === "randomText" ? "input" : "default";
       return {
-        id: edgeID,
-        source: sourceNodeID,
-        target: targetNodeID,
-        sourceHandle,
-        type: "smoothstep",
-      };
-    },
-
-    onNodesChange: (changes) => {
-      const newNodes = applyNodeChanges(changes, get().nodes);
-
-      const deletedNodeTypes = changes
-        .filter((change) => change.type === "remove")
-        .map(
-          (change) => get().nodes.find((node) => node.id === change.id)?.type
-        )
-        .filter(Boolean);
-
-      if (deletedNodeTypes.length > 0) {
-        const newNodeIDs = { ...get().nodeIDs };
-        deletedNodeTypes.forEach((type) => {
-          const remainingNodesOfType = newNodes.filter(
-            (node) => node.type === type
-          ).length;
-          newNodeIDs[type] = remainingNodesOfType;
-        });
-        set({ nodes: newNodes, nodeIDs: newNodeIDs });
-      } else {
-        set({ nodes: newNodes });
-      }
-    },
-
-    onEdgesChange: (changes) => {
-      set({
-        edges: applyEdgeChanges(changes, get().edges),
-      });
-    },
-
-    onConnect: (connection) => {
-      console.log(connection, "connection");
-      set({
         edges: addEdge(
           {
             ...connection,
+            id: `e-${connection.source}-${connection.target}`,
             type: "smoothstep",
-            animated: true,
-            markerEnd: { type: MarkerType.Arrow, height: 20, width: 20 },
+            sourceHandle: connection.sourceHandle || "default",
+            targetHandle: connection.targetHandle || targetHandle,
           },
-          get().edges
+          state.edges
         ),
-      });
-    },
+      };
+    }),
 
-    updateNodeField: (nodeId, fieldName, fieldValue) => {
-      set({
-        nodes: get().nodes.map((node) => {
-          if (node.id === nodeId) {
-            return { ...node, data: { ...node.data, [fieldName]: fieldValue } };
-          }
-          return node;
-        }),
-      });
-    },
+  getInitialEdges: (sourceHandle, target) => ({
+    id: `e-${sourceHandle}-${target}`,
+    source: sourceHandle.split("-")[0],
+    sourceHandle: sourceHandle,
+    target,
+    targetHandle: "input", // Default to "input" for randomText nodes
+    type: "smoothstep",
   }),
-  shallow // use shallow equality check
-);
-
-export default useStore;
+}));

@@ -1,10 +1,33 @@
 import { useState } from "react";
 import { Handle, Position } from "reactflow";
 import "./nodes.css";
-import { TextNode } from "./textNode";
+
+/* ------------------------ Text Node ------------------------ */
+const TextNode = ({ id, data }) => {
+  const [currText, setCurrText] = useState(data?.text || "");
+
+  return (
+    <div className="custom-node">
+      <Handle type="target" position={Position.Left} id={`${id}-input`} />
+      <div>
+        <span>Text</span>
+      </div>
+      <div>
+        <label>
+          Text:
+          <textarea
+            value={currText}
+            onChange={(e) => setCurrText(e.target.value)}
+          />
+        </label>
+      </div>
+      <Handle type="source" position={Position.Right} id={`${id}-output`} />
+    </div>
+  );
+};
 
 /* ------------------------ Input Node ------------------------ */
-export const InputNode = ({ id, data }) => {
+const InputNode = ({ id, data }) => {
   const [currName, setCurrName] = useState(
     data?.inputName || id.replace("customInput-", "input_")
   );
@@ -41,7 +64,7 @@ export const InputNode = ({ id, data }) => {
 };
 
 /* ------------------------ Output Node ------------------------ */
-export const OutputNode = ({ id, data }) => {
+const OutputNode = ({ id, data }) => {
   const [currName, setCurrName] = useState(
     data?.outputName || id.replace("customOutput-", "output_")
   );
@@ -69,7 +92,7 @@ export const OutputNode = ({ id, data }) => {
             onChange={(e) => setOutputType(e.target.value)}
           >
             <option value="Text">Text</option>
-            <option value="File">Image</option>
+            <option value="Image">Image</option>
           </select>
         </label>
       </div>
@@ -78,7 +101,7 @@ export const OutputNode = ({ id, data }) => {
 };
 
 /* ------------------------ LLM Node ------------------------ */
-export const LLMNode = ({ id }) => (
+const LLMNode = ({ id }) => (
   <div className="custom-node">
     <Handle
       type="target"
@@ -103,7 +126,7 @@ export const LLMNode = ({ id }) => (
 );
 
 /* ------------------------ Delay Node ------------------------ */
-export const DelayNode = ({ id }) => (
+const DelayNode = ({ id }) => (
   <div className="custom-node">
     <Handle type="target" position={Position.Left} id={`${id}-input`} />
     <div>
@@ -117,7 +140,7 @@ export const DelayNode = ({ id }) => (
 );
 
 /* ------------------------ Join Node ------------------------ */
-export const JoinNode = ({ id }) => (
+const JoinNode = ({ id }) => (
   <div className="custom-node">
     <Handle
       type="target"
@@ -142,7 +165,7 @@ export const JoinNode = ({ id }) => (
 );
 
 /* ------------------------ Filter Node ------------------------ */
-export const FilterNode = ({ id }) => (
+const FilterNode = ({ id }) => (
   <div className="custom-node">
     <Handle type="target" position={Position.Left} id={`${id}-input`} />
     <div>
@@ -156,7 +179,7 @@ export const FilterNode = ({ id }) => (
 );
 
 /* ------------------------ UpperCase Node ------------------------ */
-export const UpperCaseNode = ({ id }) => (
+const UpperCaseNode = ({ id }) => (
   <div className="custom-node">
     <Handle type="target" position={Position.Left} id={`${id}-input`} />
     <div>
@@ -170,7 +193,7 @@ export const UpperCaseNode = ({ id }) => (
 );
 
 /* ------------------------ Random Text Node ------------------------ */
-export const RandomTextNode = ({ id }) => (
+const RandomTextNode = ({ id }) => (
   <div className="custom-node">
     <div>
       <span>Random Text</span>
@@ -182,7 +205,7 @@ export const RandomTextNode = ({ id }) => (
   </div>
 );
 
-/* ------------------------ Export Node Types Map ------------------------ */
+/* ------------------------ Node Types Map ------------------------ */
 export const nodeTypes = {
   customInput: InputNode,
   customOutput: OutputNode,

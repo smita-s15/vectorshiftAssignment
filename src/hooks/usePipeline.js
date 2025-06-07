@@ -8,21 +8,19 @@ const selector = (state) => ({
 
 export const useSubmitPipeline = () => {
   const { nodes: storeNodes, edges: storeEdges } = useStore(selector, shallow);
-  console.log(storeNodes, storeEdges);
+  console.log(storeNodes, "storeNodes");
+  console.log(storeEdges, "storeEdges");
 
   const submit = async () => {
     if (storeNodes.length === 0) {
       return;
     }
     const nodes = storeNodes.map(({ id }) => ({ id }));
-    const edges = storeNodes.map(({ id, source, target }) => ({
+    const edges = storeEdges.map(({ id, source, target }) => ({
       id,
       source,
       target,
     }));
-
-    console.log("Store nodes:", nodes);
-    console.log("Store edges:", edges);
 
     try {
       const res = await fetch("http://localhost:8000/pipelines/parse", {
@@ -32,7 +30,6 @@ export const useSubmitPipeline = () => {
       });
 
       const data = await res.json();
-      console.log(data, "data");
     } catch (err) {
       alert("❌ Error submitting pipeline");
       console.error(err);
