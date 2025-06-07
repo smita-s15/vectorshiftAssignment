@@ -1,11 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import ReactFlow, { Controls, Background, MiniMap } from "reactflow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
-import { useStore } from "./store";
+import { useStore } from "../store";
 import { shallow } from "zustand/shallow";
 import "reactflow/dist/style.css";
-import { nodeTypes } from "./nodes/CombineNodes";
-import { useSubmitPipeline } from "./usePipeline";
+import { nodeTypes } from "../nodes/CombineNodes";
+import { useSubmitPipeline } from "../hooks/usePipeline";
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };

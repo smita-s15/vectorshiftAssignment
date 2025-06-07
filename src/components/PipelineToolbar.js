@@ -1,6 +1,6 @@
-import { DraggableNode } from "./draggableNode";
-
 // optimzied with model lsit dynamic
+
+import { DraggableNode } from "../ReactFlowUI/draggableNode";
 
 // Flow of how nodes get rendered:
 // When you drag a node button (DraggableNode with a type),

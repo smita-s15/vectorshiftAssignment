@@ -1,4 +1,4 @@
-import { useSubmitPipeline } from "./usePipeline";
+import { useSubmitPipeline } from "../hooks/usePipeline";
 
 export function SubmitButton() {
   const { submit } = useSubmitPipeline();
