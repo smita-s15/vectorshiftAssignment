@@ -27,19 +27,11 @@ const nodeList = [
 
 export const PipelineToolbar = () => {
   return (
-    <div style={{ padding: "10px" }}>
-      <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-        }}
-      >
-        {nodeList.map(({ type, label }) => (
-          <DraggableNode key={type} type={type} label={label} />
-        ))}
-      </div>
+    <div className="pipeline-toolbar">
+      <p>Drag and drop nodes to the canvas</p>
+      {nodeList.map(({ type, label }) => (
+        <DraggableNode key={type} type={type} label={label} />
+      ))}
     </div>
   );
 };

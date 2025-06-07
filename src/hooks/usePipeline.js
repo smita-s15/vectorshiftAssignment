@@ -1,20 +1,23 @@
+import { useStoreWithEqualityFn } from "zustand/traditional";
 import { useStore } from "../store";
 import { shallow } from "zustand/shallow";
 
 const selector = (state) => ({
   nodes: state.nodes,
   edges: state.edges,
+  setPipelineResponse: state.setPipelineResponse,
 });
 
 export const useSubmitPipeline = () => {
-  const { nodes: storeNodes, edges: storeEdges } = useStore(selector, shallow);
-  console.log(storeNodes, "storeNodes");
-  console.log(storeEdges, "storeEdges");
+  const {
+    nodes: storeNodes,
+    edges: storeEdges,
+    setPipelineResponse,
+  } = useStoreWithEqualityFn(useStore, selector, shallow);
 
   const submit = async () => {
-    if (storeNodes.length === 0) {
-      return;
-    }
+    if (storeNodes.length === 0) return;
+
     const nodes = storeNodes.map(({ id }) => ({ id }));
     const edges = storeEdges.map(({ id, source, target }) => ({
       id,
@@ -30,9 +33,12 @@ export const useSubmitPipeline = () => {
       });
 
       const data = await res.json();
+      setPipelineResponse(data); // ✅ save in Zustand
+      return data;
     } catch (err) {
-      alert("❌ Error submitting pipeline");
       console.error(err);
+      setPipelineResponse(null); // optional reset
+      return null;
     }
   };
 

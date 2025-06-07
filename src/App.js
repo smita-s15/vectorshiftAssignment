@@ -6,9 +6,13 @@ import { SubmitButton } from "./ReactFlowUI/SubmitButton";
 function App() {
   return (
     <ReactFlowProvider>
-      <PipelineToolbar />
-      <PipelineUI />
-      <SubmitButton />
+      <div className="App">
+        <PipelineToolbar />
+        <div className="pipeline-container">
+          <PipelineUI />
+          <SubmitButton />
+        </div>
+      </div>
     </ReactFlowProvider>
   );
 }

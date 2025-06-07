@@ -25,7 +25,11 @@ export const PipelineUI = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [existingSourceId, setExistingSourceId] = useState(null);
 
-  const { nodes: storeNodes, edges: storeEdges } = useStore(selector, shallow);
+  const { nodes: storeNodes, edges: storeEdges } = useStoreWithEqualityFn(
+    useStore,
+    selector,
+    shallow
+  );
   const {
     nodes,
     edges,
@@ -92,10 +96,13 @@ export const PipelineUI = () => {
           type: "smoothstep",
         };
         addEdge(edge);
-        console.log("Edge added:", edge);
       } else {
-        console.log("No previous node found, no edge created");
+        // If no previous node, set this as the first node
+        setExistingSourceId(nodeID);
       }
+      setTimeout(() => {
+        reactFlowInstance.fitView({ padding: 0.3, duration: 500 });
+      }, 100);
     },
     [reactFlowInstance, getNodeID, addNode, addEdge, nodes]
   );
@@ -113,29 +120,32 @@ export const PipelineUI = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
-      <div ref={reactFlowWrapper} style={{ flexGrow: 1, height: "70vh" }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          onConnect={onConnect}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          snapToGrid
-          snapGrid={[gridSize, gridSize]}
-          onInit={setReactFlowInstance}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          connectionLineType="smoothstep"
-          proOptions={proOptions}
-          fitView
-        >
-          <Background color="#aaa" gap={gridSize} />
-          <MiniMap />
-          <Controls />
-        </ReactFlow>
-      </div>
+    <div ref={reactFlowWrapper} className="reactflow-wrapper">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onConnect={onConnect}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        snapToGrid
+        snapGrid={[gridSize, gridSize]}
+        onInit={(instance) => {
+          setReactFlowInstance(instance);
+          setTimeout(() => {
+            instance.fitView({ padding: 0.3 });
+          }, 100);
+        }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        connectionLineType="smoothstep"
+        proOptions={proOptions}
+        fitView
+      >
+        <Background color="#aaa" gap={gridSize} />
+        <MiniMap />
+        <Controls />
+      </ReactFlow>
     </div>
   );
 };

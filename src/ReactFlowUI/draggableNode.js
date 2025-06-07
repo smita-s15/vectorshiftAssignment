@@ -12,22 +12,9 @@ export const DraggableNode = ({ type, label }) => {
 
   return (
     <div
-      className={type}
+      className={`${type} draggable-node`}
       onDragStart={(event) => onDragStart(event, type)}
       onDragEnd={(event) => (event.target.style.cursor = "grab")}
-      style={{
-        cursor: "grab",
-        minWidth: "80px",
-        height: "60px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: "8px",
-        backgroundColor: "#1C2536",
-        color: "#fff",
-        flexDirection: "column",
-        marginBottom: "10px",
-      }}
       draggable
     >
       <span>{label}</span>

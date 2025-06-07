@@ -6,6 +6,7 @@ import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
 export const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
+  pipelineResponse: null,
 
   getNodeID: (type) => `${type}-${nanoid(6)}`,
 
@@ -38,4 +39,5 @@ export const useStore = create((set, get) => ({
     target,
     targetHandle: `${target}-input`,
   }),
+  setPipelineResponse: (response) => set({ pipelineResponse: response }),
 }));
