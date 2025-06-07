@@ -1,0 +1,80 @@
+/* General node container */
+.custom-node {
+  width: 200px;
+  height: auto;
+  min-height: 80px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 8px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Node header/title */
+.custom-node-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #333333;
+}
+
+/* Label styling */
+.custom-node label {
+  display: block;
+  margin: 4px 0;
+  font-size: 12px;
+  color: #444;
+}
+
+/* Input and select fields */
+.custom-node input,
+.custom-node select {
+  width: 100%;
+  padding: 4px;
+  font-size: 12px;
+  margin-top: 2px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Optional spacing between sections */
+.custom-node div + div {
+  margin-top: 6px;
+}
+
+/* Align span text properly */
+.custom-node span {
+  font-size: 13px;
+  color: #222;
+}
+
+/* Optional: adjust Handle pointer visibility */
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background-color: #555;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+
+.text-node {
+  border: 1px solid #aaa;
+  padding: 10px;
+  background-color: white;
+  resize: none;
+  overflow: hidden;
+  min-width: 200px;
+  min-height: 80px;
+  position: relative;
+}
+
+.text-node-textarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  font-size: 14px;
+  outline: none;
+  overflow: hidden;
+  background: transparent;
+}
