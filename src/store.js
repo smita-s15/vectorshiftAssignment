@@ -1,3 +1,4 @@
+// store.js
 import { create } from "zustand";
 import { nanoid } from "nanoid";
 import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
@@ -19,30 +20,22 @@ export const useStore = create((set, get) => ({
     set((state) => ({ edges: applyEdgeChanges(changes, state.edges) })),
 
   onConnect: (connection) =>
-    set((state) => {
-      const targetNode = state.nodes.find((n) => n.id === connection.target);
-      const targetHandle =
-        targetNode?.data?.nodeType === "randomText" ? "input" : "default";
-      return {
-        edges: addEdge(
-          {
-            ...connection,
-            id: `e-${connection.source}-${connection.target}`,
-            type: "smoothstep",
-            sourceHandle: connection.sourceHandle || "default",
-            targetHandle: connection.targetHandle || targetHandle,
-          },
-          state.edges
-        ),
-      };
-    }),
+    set((state) => ({
+      edges: addEdge(
+        {
+          ...connection,
+          id: `e-${connection.source}-${connection.target}`,
+          type: "default",
+        },
+        state.edges
+      ),
+    })),
 
   getInitialEdges: (sourceHandle, target) => ({
     id: `e-${sourceHandle}-${target}`,
     source: sourceHandle.split("-")[0],
-    sourceHandle: sourceHandle,
+    sourceHandle,
     target,
-    targetHandle: "input", // Default to "input" for randomText nodes
-    type: "smoothstep",
+    targetHandle: `${target}-input`,
   }),
 }));

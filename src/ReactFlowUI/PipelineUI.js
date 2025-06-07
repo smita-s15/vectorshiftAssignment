@@ -25,6 +25,7 @@ export const PipelineUI = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [existingSourceId, setExistingSourceId] = useState(null);
 
+  const { nodes: storeNodes, edges: storeEdges } = useStore(selector, shallow);
   const {
     nodes,
     edges,
@@ -36,32 +37,25 @@ export const PipelineUI = () => {
     onConnect,
   } = useStoreWithEqualityFn(useStore, selector, shallow);
 
-  useEffect(() => {
-    if (nodes.length > 0) {
-      setExistingSourceId(nodes[0].id);
-    } else {
-      setExistingSourceId(null);
-    }
-  }, [nodes]);
-
   const getInitNodeData = (id, type) => ({ id, nodeType: type });
 
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
-      let appData;
 
+      let appData;
       try {
-        appData = JSON.parse(
-          event.dataTransfer.getData("application/reactflow")
-        );
+        const data = event.dataTransfer.getData("application/reactflow");
+        appData = JSON.parse(data);
       } catch (e) {
         console.error("Invalid drag data:", e);
         return;
       }
 
-      if (!appData?.nodeType || !nodeTypes[appData.nodeType]) {
-        console.error("Invalid node type:", appData.nodeType);
+      const { nodeType } = appData;
+
+      if (!nodeType || !nodeTypes[nodeType]) {
+        console.error("Invalid node type:", nodeType);
         return;
       }
 
@@ -75,27 +69,32 @@ export const PipelineUI = () => {
         y: event.clientY,
       });
 
-      const nodeID = getNodeID(appData.nodeType);
+      const nodeID = getNodeID(nodeType);
+
       const newNode = {
         id: nodeID,
-        type: appData.nodeType,
+        type: nodeType,
         position,
-        data: getInitNodeData(nodeID, appData.nodeType),
+        data: getInitNodeData(nodeID, nodeType),
       };
 
       addNode(newNode);
 
-      if (nodes.length > 0) {
-        const lastNode = nodes[nodes.length - 1];
+      // Get the last node before adding new one
+      const lastNode =
+        storeNodes.length > 0 ? storeNodes[storeNodes.length - 1] : null;
+
+      if (lastNode) {
         const edge = {
           id: `${lastNode.id}-${nodeID}`,
           source: lastNode.id,
           target: nodeID,
-          sourceHandle: "default",
-          targetHandle: "default",
-          type: "smoothstep", // or "buttonedge", "bidirectional", etc.
+          type: "smoothstep",
         };
         addEdge(edge);
+        console.log("Edge added:", edge);
+      } else {
+        console.log("No previous node found, no edge created");
       }
     },
     [reactFlowInstance, getNodeID, addNode, addEdge, nodes]
