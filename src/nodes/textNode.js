@@ -63,7 +63,7 @@ export const TextNode = ({ id, data }) => {
       />
 
       {/* Right output handle */}
-      <Handle type="source" position={Position.Right} id={`${id}-output`} />
+      <Handle type="source" position={Position.Right} id={`${id}-value`} />
     </div>
   );
 };
