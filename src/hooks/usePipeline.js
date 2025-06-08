@@ -33,11 +33,16 @@ export const useSubmitPipeline = () => {
       });
 
       const data = await res.json();
-      setPipelineResponse(data); // ✅ save in Zustand
+      const { num_nodes, num_edges, is_dag } = data;
+      setPipelineResponse(data);
+      alert("Pipeline submitted successfully! \n" +
+            `Number of Nodes: ${num_nodes}\n` +
+            `Number of Edges: ${num_edges}\n` +
+            `Is DAG: ${is_dag ? "Yes" : "No"}`);
       return data;
     } catch (err) {
       console.error(err);
-      setPipelineResponse(null); // optional reset
+      setPipelineResponse(null);
       return null;
     }
   };

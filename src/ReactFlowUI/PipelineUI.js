@@ -75,6 +75,12 @@ export const PipelineUI = () => {
 
       const nodeID = getNodeID(nodeType);
 
+      // Guard: nodeID must not be undefined
+      if (!nodeID) {
+        console.error("Failed to generate node ID");
+        return;
+      }
+
       const newNode = {
         id: nodeID,
         type: nodeType,
@@ -84,27 +90,25 @@ export const PipelineUI = () => {
 
       addNode(newNode);
 
-      // Get the last node before adding new one
-      const lastNode =
-        storeNodes.length > 0 ? storeNodes[storeNodes.length - 1] : null;
-
-      if (lastNode) {
+      // Use tracked existingSourceId to create edge
+      if (existingSourceId) {
         const edge = {
-          id: `${lastNode.id}-${nodeID}`,
-          source: lastNode.id,
+          id: `${existingSourceId}-${nodeID}`,
+          source: existingSourceId,
           target: nodeID,
           type: "smoothstep",
         };
         addEdge(edge);
-      } else {
-        // If no previous node, set this as the first node
-        setExistingSourceId(nodeID);
       }
+
+      // Update the tracker to current node ID
+      setExistingSourceId(nodeID);
+
       setTimeout(() => {
         reactFlowInstance.fitView({ padding: 0.3, duration: 500 });
       }, 100);
     },
-    [reactFlowInstance, getNodeID, addNode, addEdge, nodes]
+    [reactFlowInstance, getNodeID, addNode, addEdge, existingSourceId]
   );
 
   const onDragOver = useCallback((event) => {

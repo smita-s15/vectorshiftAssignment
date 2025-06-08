@@ -23,7 +23,7 @@ export function SubmitButton() {
       <button onClick={submit} className="button">
         Submit
       </button>
-      {pipelineResponse && (
+      {/* {pipelineResponse && (
         <div className="pipeline-response">
           <p>
             <strong>Number of Nodes:</strong> {pipelineResponse.num_nodes}
@@ -35,7 +35,7 @@ export function SubmitButton() {
             <strong>Is DAG:</strong> {pipelineResponse.is_dag ? "Yes" : "No"}
           </p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
