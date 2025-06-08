@@ -24,24 +24,21 @@ export const TextNode = ({ id, data }) => {
     setVariables(vars);
   }, [currText]);
 
-  // 🔁 Resize dynamically
   useEffect(() => {
     if (textRef.current && containerRef.current) {
       textRef.current.style.height = "auto";
-      textRef.current.style.width = "auto";
       textRef.current.style.height = `${textRef.current.scrollHeight}px`;
-      textRef.current.style.width = `${Math.max(
-        200,
-        textRef.current.scrollWidth + 20
-      )}px`;
 
-      containerRef.current.style.height = textRef.current.style.height;
-      containerRef.current.style.width = textRef.current.style.width;
+      textRef.current.style.width = "100%";
+
+      containerRef.current.style.height = `${
+        textRef.current.scrollHeight + 40
+      }px`;
     }
   }, [currText]);
 
   return (
-    <div className="custom-node text-node" ref={containerRef}>
+    <div className="text-node" ref={containerRef}>
       {/* Left-side handles for all variables */}
       {variables.map((variable, index) => (
         <Handle

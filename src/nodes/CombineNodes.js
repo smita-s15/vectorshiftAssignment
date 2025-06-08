@@ -1,30 +1,7 @@
 import { useState } from "react";
 import { Handle, Position } from "reactflow";
 import "./nodes.css";
-
-/* ------------------------ Text Node ------------------------ */
-const TextNode = ({ id, data }) => {
-  const [currText, setCurrText] = useState(data?.text || "");
-
-  return (
-    <div className="custom-node">
-      <Handle type="target" position={Position.Left} id={`${id}-input`} />
-      <div>
-        <span>Text</span>
-      </div>
-      <div>
-        <label>
-          Text:
-          <textarea
-            value={currText}
-            onChange={(e) => setCurrText(e.target.value)}
-          />
-        </label>
-      </div>
-      <Handle type="source" position={Position.Right} id={`${id}-output`} />
-    </div>
-  );
-};
+import { TextNode } from "./textNode";
 
 /* ------------------------ Input Node ------------------------ */
 const InputNode = ({ id, data }) => {
